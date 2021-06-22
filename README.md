@@ -1,1 +1,2 @@
-# life-game-js
+# Juego de la Vida
+Este programa es una investigación para intentar hacer el famoso [Juego de la Vida](https://es.wikipedia.org/wiki/Juego_de_la_vida) en Javascript para su uso en otros proyectos y su investigación, además de mi mejora como programador.
