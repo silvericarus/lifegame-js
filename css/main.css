@@ -1,3 +1,6 @@
 body {
     background-color: rgb(53, 52, 52);
 }
+#game{
+    border: 1px dashed grey;
+}
