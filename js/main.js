@@ -2,15 +2,15 @@ var canvas;
 var cntxt;
 var fps = 30;
 
-var canvasX = 500;
-var canvasY = 500;
+var canvasX;
+var canvasY;
 
 var tileX, tileY;
 
 //Variables relacionadas con el tablero
 var tablero;
-var filas = 100;
-var columnas = 100;
+var filas;
+var columnas;
 
 var blanco = '#FFFFFF';
 
@@ -50,7 +50,7 @@ var Agent = function(y,x,estado){
 
     this.dibuja = function(){
         var color;
-        if(this.estado == 1){
+        if(this.estado === 1){
             color = blanco;
         }else{
             color = negro;
@@ -110,9 +110,10 @@ function inicializa_tablero(obj){
 function start_game() {
     canvas = document.getElementById("game");
     cntxt = canvas.getContext('2d');
-
-    canvas.width = canvasX;
-    canvas.height = canvasY;
+    canvasX = canvas.width;
+    canvasY = canvas.height;
+    columnas = 100;
+    filas = 100;
 
     //Calcular tamaño de tiles
 

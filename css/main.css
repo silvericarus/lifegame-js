@@ -3,4 +3,6 @@ body {
 }
 #game{
     border: 1px dashed grey;
+    width: 99%;
+    height: 35rem;
 }
