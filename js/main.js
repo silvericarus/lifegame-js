@@ -1,16 +1,16 @@
 var canvas;
 var cntxt;
-var fps = 30;
+var fps = 15;
 
-var canvasX = 500;
-var canvasY = 500;
+var canvasX;
+var canvasY;
 
 var tileX, tileY;
 
-//Variables relacionadas con el tablero
+//Board related variables
 var tablero;
-var filas = 100;
-var columnas = 100;
+var filas;
+var columnas;
 
 var blanco = '#FFFFFF';
 
@@ -27,7 +27,7 @@ function crear_tablero(fil,col){
 var Agent = function(y,x,estado){
     this.x = x;
     this.y = y;
-    this.estado = estado; //vivo = 1, muerto = 0
+    this.estado = estado; //alive = 1, dead = 0
     this.estadoSig = this.estado;
 
     this.vecinos = [];
@@ -37,10 +37,11 @@ var Agent = function(y,x,estado){
 
         for (i = -1; i<2; i++) {
             for (j = -1; j<2; j++){
-                xVecino = (this.x + j + columnas) % columnas; // Se hace el módulo para que
-                yVecino = (this.y + i + filas) % filas; //al llegar a un borde, entre por el otro.
+                xVecino = (this.x + j + columnas) % columnas; // The modulo is done so when an agent
+                yVecino = (this.y + i + filas) % filas; //is gone away from an edge of the board, they come
+                //back on the other one.
 
-                //Descartamos el propio agente
+                //We discard the own agent from the neighbours array
                 if(i!=0 || j!=0){
                     this.vecinos.push(tablero[yVecino][xVecino]);
                 }
@@ -50,7 +51,7 @@ var Agent = function(y,x,estado){
 
     this.dibuja = function(){
         var color;
-        if(this.estado == 1){
+        if(this.estado === 1){
             color = blanco;
         }else{
             color = negro;
@@ -60,7 +61,7 @@ var Agent = function(y,x,estado){
         cntxt.fillRect(this.x*tileX,this.y*tileY,tileX,tileY);
     }
 
-    //Leyes de Conway para mutar
+    //Conway's laws for mutating
     this.nuevoCiclo = function(){
         var suma = 0;
         
@@ -68,19 +69,19 @@ var Agent = function(y,x,estado){
             suma+=this.vecinos[i].estado;  
         }
 
-        //Aplicamos las normas
-        //Si una célula está viva y tiene dos o tres vecinas vivas, sobrevive.
-        //Si una célula está muerta y tiene tres vecinas vivas, nace.
-        //Si una célula está viva y tiene más de tres vecinas vivas, muere.
+        //We apply this rules:
+        //If a cell is alive, and have 2 or 3 neighbours, survives.
+        //If a cell is dead and have 3 alive neighbours, they come back to live.
+        //If a cell is alive, and have more than 3 alive neighbours, dies.
 
         this.estadoSig =this.estado;
 
-        //Muerte -> -2 o +3
+        //Death -> -2 o +3
         if(suma<2 || suma>3){
             this.estadoSig = 0;
         }
 
-        //Vida/Resucita -> si tiene 3 vecinas vivas
+        //Live/Resurrect -> more than 3 alive neighbours
         if(suma == 3){
             this.estadoSig = 1;
         }
@@ -110,11 +111,14 @@ function inicializa_tablero(obj){
 function start_game() {
     canvas = document.getElementById("game");
     cntxt = canvas.getContext('2d');
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    canvasX = canvas.clientWidth * 2;
+    canvasY = canvas.clientHeight * 2;
+    columnas = 300;
+    filas = 300;
 
-    canvas.width = canvasX;
-    canvas.height = canvasY;
-
-    //Calcular tamaño de tiles
+    //Calculate tiles size
 
     tileX = Math.floor(canvasX/filas);
     tileY = Math.floor(canvasY/columnas);
@@ -122,7 +126,7 @@ function start_game() {
     tablero = crear_tablero(filas,columnas);
     inicializa_tablero(tablero);
 
-    //Ejecutamos el bucle
+    //Execute the loop
 
     setInterval(function(){
         bucle_principal();
@@ -130,8 +134,8 @@ function start_game() {
 }
 
 function borraCanvas(){
-    canvas.width = canvas.width;
-    canvas.height = canvas.height;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
 function dibujaCanvas(obj){
