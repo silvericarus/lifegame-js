@@ -1,109 +1,91 @@
 var canvas;
 var cntxt;
 var fps = 15;
-
 var canvasX;
 var canvasY;
-
 var tileX, tileY;
-
 //Board related variables
-var tablero;
-var filas;
-var columnas;
+var board;
+var rows;
+var cols;
+var white = '#FFFFFF';
+var black = '#000000';
 
-var blanco = '#FFFFFF';
-
-var negro = '#000000';
-
-function crear_tablero(fil,col){
-    var obj = new Array(fil);
+function create_board(row,col){
+    var obj = new Array(row);
     for(y=0; y<col; y++){
         obj[y]=new Array(col);
     }
     return obj;
 }
 
-var Agent = function(y,x,estado){
+var Agent = function(y,x,status){
     this.x = x;
     this.y = y;
-    this.estado = estado; //alive = 1, dead = 0
-    this.estadoSig = this.estado;
-
-    this.vecinos = [];
-
-    this.addVecinos = function(){
-        var xVecino,yVecino;
-
+    this.status = status; //alive = 1, dead = 0
+    this.nextStatus = this.status;
+    this.neighbours = [];
+    this.addNeighbours = function(){
+        var xNeighbour,yNeighbour;
         for (i = -1; i<2; i++) {
             for (j = -1; j<2; j++){
-                xVecino = (this.x + j + columnas) % columnas; // The modulo is done so when an agent
-                yVecino = (this.y + i + filas) % filas; //is gone away from an edge of the board, they come
+                xNeighbour = (this.x + j + cols) % cols; // The modulo is done so when an agent
+                yNeighbour = (this.y + i + rows) % rows; //is gone away from an edge of the board, they come
                 //back on the other one.
-
                 //We discard the own agent from the neighbours array
                 if(i!=0 || j!=0){
-                    this.vecinos.push(tablero[yVecino][xVecino]);
+                    this.neighbours.push(board[yNeighbour][xNeighbour]);
                 }
             }
         }
     }
 
-    this.dibuja = function(){
+    this.draw = function(){
         var color;
-        if(this.estado === 1){
-            color = blanco;
+        if(this.status === 1){
+            color = white;
         }else{
-            color = negro;
+            color = black;
         }
-
         cntxt.fillStyle = color;
         cntxt.fillRect(this.x*tileX,this.y*tileY,tileX,tileY);
     }
 
     //Conway's laws for mutating
-    this.nuevoCiclo = function(){
-        var suma = 0;
-        
-        for (i=0;i<this.vecinos.length;i++) {
-            suma+=this.vecinos[i].estado;  
+    this.newLoop = function(){
+        var sum = 0;
+        for (i=0;i<this.neighbours.length;i++) {
+            sum+=this.neighbours[i].status;  
         }
-
         //We apply this rules:
         //If a cell is alive, and have 2 or 3 neighbours, survives.
         //If a cell is dead and have 3 alive neighbours, they come back to live.
         //If a cell is alive, and have more than 3 alive neighbours, dies.
-
-        this.estadoSig =this.estado;
-
+        this.nextStatus =this.status;
         //Death -> -2 o +3
-        if(suma<2 || suma>3){
-            this.estadoSig = 0;
+        if(sum<2 || sum>3){
+            this.nextStatus = 0;
         }
-
         //Live/Resurrect -> more than 3 alive neighbours
-        if(suma == 3){
-            this.estadoSig = 1;
+        if(sum == 3){
+            this.nextStatus = 1;
         }
     }
-
-    this.mutar = function(){
-        this.estado=this.estadoSig;   
+    this.mutate = function(){
+        this.status=this.nextStatus;   
     }
 }
 
-function inicializa_tablero(obj){
-    for(y=0;y<filas;y++){
-        for (x=0; x<columnas;x++) {
-            estado = Math.floor(Math.random()*2);
-
-            obj[y][x] = new Agent(y,x,estado);
+function init_board(obj){
+    for(y=0;y<rows;y++){
+        for (x=0; x<cols;x++) {
+            aStatus = Math.floor(Math.random()*2);
+            obj[y][x] = new Agent(y,x,aStatus);
         }
     }
-
-    for(y=0;y<filas;y++){
-        for (x=0; x<columnas;x++) {
-            obj[y][x].addVecinos();
+    for(y=0;y<rows;y++){
+        for (x=0; x<cols;x++) {
+            obj[y][x].addNeighbours();
         }
     }
 }
@@ -115,52 +97,43 @@ function start_game() {
     canvas.height = canvas.clientHeight;
     canvasX = canvas.clientWidth * 2;
     canvasY = canvas.clientHeight * 2;
-    columnas = 300;
-    filas = 300;
-
+    cols = 300;
+    rows = 300;
     //Calculate tiles size
-
-    tileX = Math.floor(canvasX/filas);
-    tileY = Math.floor(canvasY/columnas);
-
-    tablero = crear_tablero(filas,columnas);
-    inicializa_tablero(tablero);
-
+    tileX = Math.floor(canvasX/rows);
+    tileY = Math.floor(canvasY/cols);
+    board = create_board(rows,cols);
+    init_board(board);
     //Execute the loop
-
     setInterval(function(){
-        bucle_principal();
+        main_loop();
     },1000/fps);
 }
 
-function borraCanvas(){
+function deleteCanvas(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
 
-function dibujaCanvas(obj){
-    for (y=0;y<filas;y++) {
-        for (x=0;x<columnas;x++) {
-            obj[y][x].dibuja();
+function drawCanvas(obj){
+    for (y=0;y<rows;y++) {
+        for (x=0;x<cols;x++) {
+            obj[y][x].draw();
         }
     }
-
-    for (y=0;y<filas;y++) {
-        for (x=0;x<columnas;x++) {
-            obj[y][x].nuevoCiclo();
+    for (y=0;y<rows;y++) {
+        for (x=0;x<cols;x++) {
+            obj[y][x].newLoop();
         }
     }
-
-    for (y=0;y<filas;y++) {
-        for (x=0;x<columnas;x++) {
-            obj[y][x].mutar();
+    for (y=0;y<rows;y++) {
+        for (x=0;x<cols;x++) {
+            obj[y][x].mutate();
         }
     }
-
-
 }
 
-function bucle_principal(){
-    borraCanvas();
-    dibujaCanvas(tablero);
+function main_loop(){
+    deleteCanvas();
+    drawCanvas(board);
 }
