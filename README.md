@@ -3,6 +3,7 @@
 <p style="float:left;">
 	<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA 4.0 License"></a>
 	<a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a>
+	<img src="https://4.vercel.app/github/languageall/silvericarus/lifegame-js">
 </p>
 <p>This project is about math investigation and trying (with the best looks and success, I hope) to program the <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Game of Life</a> using Javascript for its use in other projects and out of pure curiosity, as well as getting better as a programmer. además de mi mejora como programador. I'll now explain how this <b>cellular automaton</b> works on the inside.</p>
 
