@@ -2,6 +2,7 @@
 <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Game_of_life_animated_glider_2.gif" width="91.5px">
 <p style="float:left;">
 	<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA 4.0 License"></a>
+	<a href="https://app.netlify.com/sites/lifegame-js/deploys"><img src="https://api.netlify.com/api/v1/badges/e33284a5-da4b-4053-b128-00229477ffb2/deploy-status" alt="Netlify Status"/></a>
 	<a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a>
 	<img src="https://4.vercel.app/github/languageall/silvericarus/lifegame-js">
 </p>
